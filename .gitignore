@@ -1,0 +1,13 @@
+# Folders to exclude
+.localdevserver/
+.settings/
+.sfdx/
+.vscode/
+
+# NPM
+node_modules/
+yarn.lock
+
+# Files to exclude
+*.log
+**/lwc/jsconfig.json

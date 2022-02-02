@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllReleased</fullName>
+    <columns>NAME</columns>
+    <columns>Package__c</columns>
+    <columns>PackageNamespacePrefix__c</columns>
+    <columns>SubscriberPackageVersionId__c</columns>
+    <columns>VersionNumber__c</columns>
+    <columns>TotalPackageSubscriberOrgs__c</columns>
+    <columns>LastUpdated__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ReleaseState__c</field>
+        <operation>equals</operation>
+        <value>Released</value>
+    </filters>
+    <label>All Released</label>
+</ListView>

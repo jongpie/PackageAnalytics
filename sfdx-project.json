@@ -1,0 +1,12 @@
+{
+  "packageDirectories": [
+    {
+      "path": "package-analytics",
+      "default": true
+    }
+  ],
+  "name": "package-analytics",
+  "namespace": "",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "53.0"
+}

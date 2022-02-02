@@ -1,0 +1,17 @@
+{
+  "name": "dev-hub-setup",
+  "version": "0.9.0",
+  "devDependencies": {
+    "prettier": "latest",
+    "prettier-plugin-apex": "latest",
+    "@prettier/plugin-xml": "latest"
+  },
+  "scripts": {
+    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jongpie/PackageAnalytics.git"
+  },
+  "author": "Jonathan Gillespie"
+}
