@@ -50,6 +50,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>PackageSubscriberOrg__c.PackageVersionNumberFormula__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>PackageSubscriberOrg__c.ParentOrgFormula__c</field>
         <readable>false</readable>
     </fieldPermissions>

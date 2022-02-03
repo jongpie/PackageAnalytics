@@ -3,6 +3,7 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>PackageVersion__c</columns>
+    <columns>PackageVersionNumberFormula__c</columns>
     <columns>PackageNamespacePrefix__c</columns>
     <columns>OrgId__c</columns>
     <columns>OrgType__c</columns>
