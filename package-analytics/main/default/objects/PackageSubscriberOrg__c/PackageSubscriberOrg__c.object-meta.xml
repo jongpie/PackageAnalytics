@@ -161,7 +161,7 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Package Subscriber Org</label>
     <nameField>
-        <label>Package Subscriber Org Name</label>
+        <label>Org Name</label>
         <trackHistory>true</trackHistory>
         <type>Text</type>
     </nameField>

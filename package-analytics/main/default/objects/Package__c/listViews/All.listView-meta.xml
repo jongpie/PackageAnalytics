@@ -5,6 +5,7 @@
     <columns>PackageId__c</columns>
     <columns>NamespacePrefix__c</columns>
     <columns>TotalReleasedPackageVersions__c</columns>
+    <columns>TotalPackageVersions__c</columns>
     <columns>TotalProductionPackageSubscriberOrgs__c</columns>
     <columns>TotalPackageSubscriberOrgs__c</columns>
     <columns>LastUpdated__c</columns>

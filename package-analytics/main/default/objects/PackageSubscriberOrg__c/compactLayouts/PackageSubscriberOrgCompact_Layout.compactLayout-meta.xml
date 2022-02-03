@@ -6,7 +6,7 @@
     <fields>OrgId__c</fields>
     <fields>OrgType__c</fields>
     <fields>OrgStatus__c</fields>
-    <fields>ParentOrg__c</fields>
+    <fields>ParentOrgFormula__c</fields>
     <fields>LastUpdated__c</fields>
     <label>Package Subscriber Org Compact Layout</label>
 </CompactLayout>

@@ -19,6 +19,10 @@
                 <behavior>Edit</behavior>
                 <field>InstalledStatus__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>InstanceNameFormula__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -30,8 +34,8 @@
                 <field>OrgStatus__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>InstanceName__c</field>
+                <behavior>Readonly</behavior>
+                <field>ParentOrgFormula__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -61,25 +65,6 @@
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>true</detailHeading>
-        <editHeading>true</editHeading>
-        <label>Parent Org Information</label>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentOrgId__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentOrg__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <style>TwoColumnsTopToBottom</style>
-    </layoutSections>
-    <layoutSections>
-        <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
         <editHeading>true</editHeading>
         <label>Custom Links</label>
@@ -101,7 +86,7 @@
         <fields>NAME</fields>
         <fields>PackageVersion__c</fields>
         <fields>OrgId__c</fields>
-        <fields>InstanceName__c</fields>
+        <fields>InstanceNameFormula__c</fields>
         <fields>OrgType__c</fields>
         <fields>OrgStatus__c</fields>
         <fields>LastUpdated__c</fields>
