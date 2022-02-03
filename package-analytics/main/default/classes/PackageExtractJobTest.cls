@@ -137,6 +137,29 @@ private class PackageExtractJobTest {
   }
 
   @IsTest
+  static void storesPackageVersionDataWithTruncatedName() {
+    // Arrange
+    Package__c storedPackage = generateStoredPackage();
+    insert storedPackage;
+    SObject metadataPackageVersion = generateMetadataPackageVersion(
+      storedPackage.PackageId__c,
+      new Map<String, Object>{ 'Name' => 'Z'.repeat(10000) }
+    );
+    Integer countOfPackageVersionRecords = [SELECT COUNT() FROM PackageVersion__c];
+    System.assertEquals(0, countOfPackageVersionRecords);
+
+    // Act
+    PackageExtractJob job = new PackageExtractJob();
+    job.execute(null, new List<SObject>{ metadataPackageVersion });
+
+    // Assert
+    Integer fieldMaxLength = Schema.PackageVersion__c.Name.getDescribe().getLength();
+    String expectedTruncatedName = ((String) metadataPackageVersion.get('Name')).left(fieldMaxLength);
+    PackageVersion__c storedPackageVersion = [SELECT Name FROM PackageVersion__c];
+    System.assertEquals(expectedTruncatedName, storedPackageVersion.Name);
+  }
+
+  @IsTest
   static void storesPackageSubscriberDataOnExecute() {
     // Arrange
     Package__c storedPackage = generateStoredPackage();
@@ -276,6 +299,10 @@ private class PackageExtractJobTest {
   }
 
   private static SObject generateMetadataPackageVersion(Id metadataPackageId) {
+    return generateMetadataPackageVersion(metadataPackageId, new Map<String, Object>());
+  }
+
+  private static SObject generateMetadataPackageVersion(Id metadataPackageId, Map<String, Object> fieldValues) {
     Map<String, Object> sobjectAttributes = new Map<String, Object>{ 'type' => 'MetadataPackageVersion' };
     Map<String, Object> metadataPackageVersionUntyped = new Map<String, Object>{
       'attributes' => sobjectAttributes,
@@ -290,6 +317,7 @@ private class PackageExtractJobTest {
       'ReleaseState' => 'Beta',
       'SystemModStamp' => System.now().addDays(-1)
     };
+    metadataPackageVersionUntyped.putAll(fieldValues);
 
     String metadataPackageVersionJson = JSON.serialize(metadataPackageVersionUntyped);
     SObject metadataPackageVersion = (SObject) JSON.deserialize(metadataPackageVersionJson, SObject.class);

@@ -106,7 +106,7 @@ public without sharing class PackageExtractJob implements Database.Batchable<SOb
           LastUpdated__c = (Datetime) metadataPackageVersion.get('SystemModStamp'),
           MajorVersion__c = (Decimal) metadataPackageVersion.get('MajorVersion'),
           MinorVersion__c = (Decimal) metadataPackageVersion.get('MinorVersion'),
-          Name = (String) metadataPackageVersion.get('Name'),
+          Name = truncateFieldValue(Schema.PackageVersion__c.Name, (String) metadataPackageVersion.get('Name')),
           Package__r = new Package__c(
             PackageId__c = Id.valueOf((String) metadataPackageVersion.get('MetadataPackageId'))
           ),
@@ -155,5 +155,10 @@ public without sharing class PackageExtractJob implements Database.Batchable<SOb
       }
     }
     upsert childSubscriberOrgsByOrgId.values() OrgId__c;
+  }
+
+  private static String truncateFieldValue(Schema.SObjectField field, String value) {
+    Integer fieldMaxLength = field.getDescribe().getLength();
+    return value?.left(fieldMaxLength);
   }
 }
