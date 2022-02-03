@@ -3,6 +3,7 @@
 .settings/
 .sfdx/
 .vscode/
+wip/
 
 # NPM
 node_modules/

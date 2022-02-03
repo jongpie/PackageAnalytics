@@ -16,7 +16,7 @@
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>Package_Analytics_Console_UtilityBar</utilityBar>
+    <utilityBar>PackageAnalyticsConsoleUtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
             <fieldName>PackageVersion__c</fieldName>
