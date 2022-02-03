@@ -6,6 +6,7 @@
     <fields>PackageId__c</fields>
     <fields>NamespacePrefix__c</fields>
     <fields>TotalReleasedPackageVersions__c</fields>
+    <fields>TotalPackageSubscriberOrgs__c</fields>
     <fields>LastUpdated__c</fields>
     <label>Package Compact Layout</label>
 </CompactLayout>

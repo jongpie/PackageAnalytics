@@ -6,6 +6,7 @@
     <columns>PackageNamespacePrefix__c</columns>
     <columns>SubscriberPackageVersionId__c</columns>
     <columns>VersionNumber__c</columns>
+    <columns>TotalProductionPackageSubscriberOrgs__c</columns>
     <columns>TotalPackageSubscriberOrgs__c</columns>
     <columns>LastUpdated__c</columns>
     <filterScope>Everything</filterScope>

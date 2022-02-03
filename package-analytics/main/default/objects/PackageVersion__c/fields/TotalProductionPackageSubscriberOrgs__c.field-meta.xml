@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TotalPackageSubscriberOrgs__c</fullName>
+    <fullName>TotalProductionPackageSubscriberOrgs__c</fullName>
     <externalId>false</externalId>
-    <label>Total Installs</label>
+    <label>Total Production Installs</label>
+    <summaryFilterItems>
+        <field>PackageSubscriberOrg__c.OrgType__c</field>
+        <operation>equals</operation>
+        <value>Production</value>
+    </summaryFilterItems>
     <summaryForeignKey>PackageSubscriberOrg__c.PackageVersion__c</summaryForeignKey>
     <summaryOperation>count</summaryOperation>
     <trackHistory>false</trackHistory>

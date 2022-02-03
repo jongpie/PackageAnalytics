@@ -100,6 +100,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>PackageVersion__c.TotalProductionPackageSubscriberOrgs__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>PackageVersion__c.VersionNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -117,6 +122,16 @@
         <editable>false</editable>
         <field>Package__c.PackageCategory__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Package__c.TotalPackageSubscriberOrgs__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Package__c.TotalProductionPackageSubscriberOrgs__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
