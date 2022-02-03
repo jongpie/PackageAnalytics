@@ -7,7 +7,7 @@
     "@prettier/plugin-xml": "latest"
   },
   "scripts": {
-    "package:version:create": "sfdx force:package:version:create --package \"Package Analytics\" --installationkeybypass --wait 30",
+    "package:version:create": "sfdx force:package:version:create --package \"Package Analytics\" --codecoverage --installationkeybypass --wait 30",
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""
   },
   "repository": {
