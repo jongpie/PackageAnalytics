@@ -7,7 +7,6 @@
     <columns>OrgId__c</columns>
     <columns>OrgType__c</columns>
     <columns>OrgStatus__c</columns>
-    <columns>ParentOrgId__c</columns>
     <columns>ParentOrg__c</columns>
     <columns>LastUpdated__c</columns>
     <filterScope>Everything</filterScope>

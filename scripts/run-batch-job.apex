@@ -1,2 +1,2 @@
-Database.executeBatch(new PackageExtractJob());
+Database.executeBatch(new PackageExtractJob(), 2000);
 // new PackageExtractJob().scheduleHourly();

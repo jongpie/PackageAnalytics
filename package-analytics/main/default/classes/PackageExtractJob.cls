@@ -1,148 +1,146 @@
-public without sharing class PackageExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
-  private List<Schema.SObjectType> sobjectTypes;
-  private Schema.SObjectType currentSObjectType;
+/*
+  The SObjects `MetadataPackage`, `MetadataPackageVersion`, and `PackageSubscriber` don't exist in all orgs,
+  including scratch orgs - this class uses Strings, dyanmic Apex & dynamic SOQL so this can be bundled into a 2GP
+*/
 
-  public PackageExtractJob() {
-    this.sobjectTypes = new List<Schema.SObjectType>{
-      Schema.MetadataPackage.SObjectType,
-      Schema.MetadataPackageVersion.SObjectType,
-      Schema.PackageSubscriber.SObjectType
-    };
-  }
+public without sharing class PackageExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
+  private static final Integer BATCH_SIZE = 2000;
+
+  @TestVisible
+  private Integer queryLimit;
+  @TestVisible
+  private Boolean willRunAnotherTime = false;
+  @TestVisible
+  private List<String> sobjectNames = new List<String>{
+    'MetadataPackage',
+    'MetadataPackageVersion',
+    'PackageSubscriber'
+  };
 
   public void scheduleHourly() {
-    System.schedule('Hourly Package Extract Job', '0 0 * * * ?', this);
+    System.schedule('Hourly Package Data Extract Job', '0 0 * * * ?', this);
   }
 
   public void execute(System.SchedulableContext context) {
-    Database.executeBatch(this);
+    Database.executeBatch(this, BATCH_SIZE);
   }
 
   public Database.QueryLocator start(Database.BatchableContext context) {
-    this.currentSObjectType = this.sobjectTypes.remove(0);
-    return getQueryLocator(this.currentSObjectType);
+    String currentSObjectName = this.sobjectNames.remove(0);
+    return getQueryLocator(currentSObjectName);
   }
 
   public void execute(Database.BatchableContext context, List<SObject> scope) {
-    if (this.currentSObjectType == Schema.MetadataPackage.SObjectType) {
-      this.processPackages(scope);
-    } else if (this.currentSObjectType == Schema.MetadataPackageVersion.SObjectType) {
-      this.processPackageVersions(scope);
-    } else if (this.currentSObjectType == Schema.PackageSubscriber.SObjectType) {
-      this.processPackageSubscribers(scope);
+    String currentSObjectName = scope.get(0).getSObjectType().getDescribe().getName();
+
+    switch on currentSObjectName {
+      when 'MetadataPackage' {
+        this.processPackages(scope);
+      }
+      when 'MetadataPackageVersion' {
+        this.processPackageVersions(scope);
+      }
+      when 'PackageSubscriber' {
+        this.processPackageSubscribers(scope);
+      }
     }
   }
 
   public void finish(Database.BatchableContext context) {
-    if (this.sobjectTypes.isEmpty() == false) {
-      Database.executeBatch(this);
+    if (this.sobjectNames.isEmpty() == false) {
+      this.willRunAnotherTime = true;
+      if (Test.isRunningTest() == false) {
+        Database.executeBatch(this, BATCH_SIZE);
+      }
     }
   }
 
-  private Database.QueryLocator getQueryLocator(Schema.SObjectType sobjectType) {
-    if (sobjectType == Schema.MetadataPackage.SObjectType) {
-      return Database.getQueryLocator(
-        [SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage]
-      );
-    } else if (sobjectType == Schema.MetadataPackageVersion.SObjectType) {
-      return Database.getQueryLocator(
-        [
-          SELECT
-            BuildNumber,
-            IsDeprecated,
-            MajorVersion,
-            MinorVersion,
-            Name,
-            MetadataPackageId,
-            PatchVersion,
-            ReleaseState,
-            Id,
-            SystemModStamp
-          FROM MetadataPackageVersion
-        ]
-      );
-    } else if (sobjectType == Schema.PackageSubscriber.SObjectType) {
-      return Database.getQueryLocator(
-        [
-          SELECT
-            Id,
-            InstalledStatus,
-            InstanceName,
-            ParentOrg,
-            MetadataPackageId,
-            MetadataPackageVersionId,
-            OrgKey,
-            OrgName,
-            OrgStatus,
-            OrgType,
-            SystemModStamp
-          FROM PackageSubscriber
-        ]
-      );
-    } else {
-      return null;
+  private Database.QueryLocator getQueryLocator(String sobjectName) {
+    String query;
+    switch on sobjectName {
+      when 'MetadataPackage' {
+        query = 'SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage';
+      }
+      when 'MetadataPackageVersion' {
+        query = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion';
+      }
+      when 'PackageSubscriber' {
+        query = 'SELECT Id, InstalledStatus, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
+      }
+      when else {
+        Exception ex = new IllegalArgumentException();
+        ex.setMessage('Unsupported SObjectType: ' + sobjectName);
+        throw ex;
+      }
     }
+
+    if (this.queryLimit != null) {
+      query += ' LIMIT ' + this.queryLimit;
+    }
+    return Database.getQueryLocator(query);
   }
 
-  private void processPackages(List<MetadataPackage> metadataPackages) {
+  private void processPackages(List<SObject> metadataPackages) {
     List<Package__c> packages = new List<Package__c>();
-    for (MetadataPackage metadataPackage : metadataPackages) {
+    for (SObject metadataPackage : metadataPackages) {
       packages.add(
         new Package__c(
-          LastUpdated__c = metadataPackage.SystemModStamp,
-          PackageCategory__c = metadataPackage.PackageCategory,
-          PackageId__c = Id.valueOf(metadataPackage.Id),
-          Name = metadataPackage.Name,
-          NamespacePrefix__c = metadataPackage.NamespacePrefix
+          LastUpdated__c = (Datetime) metadataPackage.get('SystemModStamp'),
+          PackageCategory__c = (String) metadataPackage.get('PackageCategory'),
+          PackageId__c = Id.valueOf((String) metadataPackage.get('Id')),
+          Name = (String) metadataPackage.get('Name'),
+          NamespacePrefix__c = (String) metadataPackage.get('NamespacePrefix')
         )
       );
     }
     upsert packages PackageId__c;
   }
 
-  private void processPackageVersions(List<MetadataPackageVersion> metadataPackageVersions) {
+  private void processPackageVersions(List<SObject> metadataPackageVersions) {
     List<PackageVersion__c> packageVersions = new List<PackageVersion__c>();
-    for (MetadataPackageVersion metadataPackageVersion : metadataPackageVersions) {
+    for (SObject metadataPackageVersion : metadataPackageVersions) {
       packageVersions.add(
         new PackageVersion__c(
-          BuildNumber__c = metadataPackageVersion.BuildNumber,
-          IsDeprecated__c = metadataPackageVersion.IsDeprecated,
-          LastUpdated__c = metadataPackageVersion.SystemModStamp,
-          MajorVersion__c = metadataPackageVersion.MajorVersion,
-          MinorVersion__c = metadataPackageVersion.MinorVersion,
-          Name = metadataPackageVersion.Name,
-          Package__r = new Package__c(PackageId__c = Id.valueOf(metadataPackageVersion.MetadataPackageId)),
-          PatchVersion__c = metadataPackageVersion.PatchVersion,
-          ReleaseState__c = metadataPackageVersion.ReleaseState,
-          SubscriberPackageVersionId__c = Id.valueOf(metadataPackageVersion.Id)
+          BuildNumber__c = (Decimal) metadataPackageVersion.get('BuildNumber'),
+          IsDeprecated__c = (Boolean) metadataPackageVersion.get('IsDeprecated'),
+          LastUpdated__c = (Datetime) metadataPackageVersion.get('SystemModStamp'),
+          MajorVersion__c = (Decimal) metadataPackageVersion.get('MajorVersion'),
+          MinorVersion__c = (Decimal) metadataPackageVersion.get('MinorVersion'),
+          Name = (String) metadataPackageVersion.get('Name'),
+          Package__r = new Package__c(
+            PackageId__c = Id.valueOf((String) metadataPackageVersion.get('MetadataPackageId'))
+          ),
+          PatchVersion__c = (Decimal) metadataPackageVersion.get('PatchVersion'),
+          ReleaseState__c = (String) metadataPackageVersion.get('ReleaseState'),
+          SubscriberPackageVersionId__c = Id.valueOf((String) metadataPackageVersion.get('Id'))
         )
       );
     }
     upsert packageVersions SubscriberPackageVersionId__c;
   }
 
-  private void processPackageSubscribers(List<PackageSubscriber> packageSubscribers) {
+  private void processPackageSubscribers(List<SObject> packageSubscribers) {
     Map<String, PackageSubscriberOrg__c> parentSubscriberOrgsByOrgId = new Map<String, PackageSubscriberOrg__c>();
     Map<String, PackageSubscriberOrg__c> childSubscriberOrgsByOrgId = new Map<String, PackageSubscriberOrg__c>();
 
-    for (PackageSubscriber packageSubscriber : packageSubscribers) {
+    for (SObject packageSubscriber : packageSubscribers) {
       PackageSubscriberOrg__c org = new PackageSubscriberOrg__c(
-        InstalledStatus__c = packageSubscriber.InstalledStatus,
-        InstanceName__c = packageSubscriber.InstanceName,
-        LastUpdated__c = packageSubscriber.SystemModStamp,
-        Name = packageSubscriber.OrgName,
-        OrgId__c = Id.valueOf(packageSubscriber.OrgKey),
-        OrgStatus__c = packageSubscriber.OrgStatus,
-        OrgType__c = packageSubscriber.OrgType,
-        PackageSubscriberId__c = Id.valueOf(packageSubscriber.Id),
+        InstalledStatus__c = (String) packageSubscriber.get('InstalledStatus'),
+        InstanceName__c = (String) packageSubscriber.get('InstanceName'),
+        LastUpdated__c = (Datetime) packageSubscriber.get('SystemModStamp'),
+        Name = (String) packageSubscriber.get('OrgName'),
+        OrgId__c = Id.valueOf((String) packageSubscriber.get('OrgKey')),
+        OrgStatus__c = (String) packageSubscriber.get('OrgStatus'),
+        OrgType__c = (String) packageSubscriber.get('OrgType'),
+        PackageSubscriberId__c = Id.valueOf((String) packageSubscriber.get('Id')),
         PackageVersion__r = new PackageVersion__c(
-          SubscriberPackageVersionId__c = Id.valueOf(packageSubscriber.MetadataPackageVersionId)
+          SubscriberPackageVersionId__c = Id.valueOf((String) packageSubscriber.get('MetadataPackageVersionId'))
         )
       );
-      if (packageSubscriber.ParentOrg == null) {
+      if (packageSubscriber.get('ParentOrg') == null) {
         parentSubscriberOrgsByOrgId.put(org.OrgId__c, org);
       } else {
-        org.ParentOrgId__c = Id.valueOf(packageSubscriber.ParentOrg);
+        org.ParentOrgId__c = Id.valueOf((String) packageSubscriber.get('ParentOrg'));
         childSubscriberOrgsByOrgId.put(org.OrgId__c, org);
       }
     }
