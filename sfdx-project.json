@@ -1,21 +1,23 @@
 {
-  "packageDirectories": [
-    {
-      "path": "package-analytics",
-      "default": true,
-      "package": "Package Analytics",
-      "versionName": "Initial beta",
-      "versionNumber": "0.9.0.NEXT",
-      "versionDescription": "Initial release of new Package Analytics app"
+    "packageDirectories": [
+        {
+            "path": "package-analytics",
+            "default": true,
+            "package": "Package Analytics",
+            "versionName": "Initial beta",
+            "versionNumber": "0.9.0.NEXT",
+            "versionDescription": "Initial release of new Package Analytics app"
+        }
+    ],
+    "name": "package-analytics",
+    "namespace": "",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "53.0",
+    "packageAliases": {
+        "Package Analytics": "0Ho4x00000000XICAY",
+        "Package Analytics@0.9.0-1": "04t4x000000FEhiAAG",
+        "Package Analytics@0.9.0-2": "04t4x000000FEhnAAG",
+        "Package Analytics@0.9.0-3": "04t4x000000FEiMAAW",
+        "Package Analytics@0.9.0-4": "04t4x000000FEiRAAW"
     }
-  ],
-  "name": "package-analytics",
-  "namespace": "",
-  "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "53.0",
-  "packageAliases": {
-    "Package Analytics": "0Ho4x00000000XICAY",
-    "Package Analytics@0.9.0-1": "04t4x000000FEhiAAG",
-    "Package Analytics@0.9.0-2": "04t4x000000FEhnAAG"
-  }
 }

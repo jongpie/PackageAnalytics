@@ -2,7 +2,7 @@
 
 Provides reportable data for your Salesforce packages in your dev hub.
 
-[Install in a Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000FEhnAAG)
+[Install in a Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000FEiRAAW)
 
 ## Getting Started
 
