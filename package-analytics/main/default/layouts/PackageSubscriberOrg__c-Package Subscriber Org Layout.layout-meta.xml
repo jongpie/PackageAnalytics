@@ -16,10 +16,6 @@
                 <field>OrgId__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>InstalledStatus__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>InstanceNameFormula__c</field>
             </layoutItems>

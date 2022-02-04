@@ -84,7 +84,7 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
         query = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion';
       }
       when 'PackageSubscriber' {
-        query = 'SELECT Id, InstalledStatus, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
+        query = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
       }
       when else {
         Exception ex = new IllegalArgumentException();
@@ -156,7 +156,6 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
 
     for (PackageSubscriberInfo packageSubscriber : packageSubscribers) {
       PackageSubscriberOrg__c storedOrg = new PackageSubscriberOrg__c(
-        InstalledStatus__c = packageSubscriber.InstalledStatus,
         InstanceName__c = packageSubscriber.InstanceName,
         LastUpdated__c = packageSubscriber.SystemModStamp,
         Name = packageSubscriber.OrgName,
@@ -213,7 +212,6 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
 
   public class PackageSubscriberInfo {
     public Id Id;
-    public String InstalledStatus;
     public String InstanceName;
     public Id MetadataPackageVersionId;
     public Id OrgKey;

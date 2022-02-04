@@ -60,7 +60,7 @@ private class PackageDataExtractJobTest {
     job.start(null);
 
     // Assert
-    String expectedQuery = 'SELECT Id, InstalledStatus, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
+    String expectedQuery = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
     System.assertEquals(expectedQuery, job.currentQuery);
   }
 
@@ -176,7 +176,6 @@ private class PackageDataExtractJobTest {
     // Assert
     PackageSubscriberOrg__c storedPackageSubscriberOrg = [
       SELECT
-        InstalledStatus__c,
         InstanceName__c,
         LastUpdated__c,
         Name,
@@ -188,7 +187,6 @@ private class PackageDataExtractJobTest {
       FROM PackageSubscriberOrg__c
     ];
     System.assertEquals(packageSubscriber.Id, storedPackageSubscriberOrg.PackageSubscriberId__c);
-    System.assertEquals(packageSubscriber.InstalledStatus, storedPackageSubscriberOrg.InstalledStatus__c);
     System.assertEquals(packageSubscriber.InstanceName, storedPackageSubscriberOrg.InstanceName__c);
     System.assertEquals(packageSubscriber.OrgName, storedPackageSubscriberOrg.Name);
     System.assertEquals(packageSubscriber.OrgKey, storedPackageSubscriberOrg.OrgId__c);
@@ -311,7 +309,6 @@ private class PackageDataExtractJobTest {
     PackageDataExtractJob.PackageSubscriberInfo packageSubscriber = new PackageDataExtractJob.PackageSubscriberInfo();
     // The actual ID doesn't matter - it just needs to be a real ID
     packageSubscriber.Id = UserInfo.getUserId();
-    packageSubscriber.InstalledStatus = 'i';
     packageSubscriber.InstanceName = 'ABC123';
     packageSubscriber.MetadataPackageVersionId = metadataPackageVersionId;
     packageSubscriber.OrgKey = '00D3g0000019YLpEAM';

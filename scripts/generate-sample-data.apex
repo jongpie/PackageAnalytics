@@ -103,7 +103,6 @@ for (Integer z = 0; z < packageVersions.size(); z++) {
 
     packageSubscriberOrgs.add(
       new PackageSubscriberOrg__c(
-        InstalledStatus__c = 'i',
         InstanceName__c = 'NA' + i,
         LastUpdated__c = lastUpdatedDatetime,
         Name = 'Some customer org',

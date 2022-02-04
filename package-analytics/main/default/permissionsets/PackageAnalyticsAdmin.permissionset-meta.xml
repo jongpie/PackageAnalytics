@@ -10,11 +10,6 @@
     </classAccesses>
     <fieldPermissions>
         <editable>false</editable>
-        <field>PackageSubscriberOrg__c.InstalledStatus__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>PackageSubscriberOrg__c.InstanceNameFormula__c</field>
         <readable>true</readable>
     </fieldPermissions>
