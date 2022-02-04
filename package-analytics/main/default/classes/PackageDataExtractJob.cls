@@ -8,24 +8,27 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
   private static final Database.DmlOptions DML_OPTIONS {
     get {
       if (DML_OPTIONS == null) {
-        DML_OPTIONS = new Database.dmlOptions();
+        DML_OPTIONS = new Database.DmlOptions();
         DML_OPTIONS.AllowFieldTruncation = true;
       }
       return DML_OPTIONS;
     }
     set;
   }
-
   @TestVisible
-  private static final Boolean IS_PACKAGING_ORG {
-    get {
-      if (IS_PACKAGING_ORG == null) {
-        IS_PACKAGING_ORG = Type.forName('MetadataPackage') != null;
-      }
-      return IS_PACKAGING_ORG;
-    }
-    set;
-  }
+  private static final Boolean IS_PACKAGING_ORG = Type.forName('MetadataPackage') != null;
+  @TestVisible
+  private static final String METADATA_PACKAGE_NAME = 'MetadataPackage';
+  @TestVisible
+  private static final String METADATA_PACKAGE_QUERY = 'SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage ORDER BY SystemModStamp DESC';
+  @TestVisible
+  private static final String METADATA_PACKAGE_VERSION_NAME = 'MetadataPackageVersion';
+  @TestVisible
+  private static final String METADATA_PACKAGE_VERSION_QUERY = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion ORDER BY SystemModStamp DESC';
+  @TestVisible
+  private static final String PACKAGE_SUBSCRIBER_NAME = 'PackageSubscriber';
+  @TestVisible
+  private static final String PACKAGE_SUBSCRIBER_QUERY = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber ORDER BY SystemModStamp DESC';
 
   @TestVisible
   private String currentQuery;
@@ -35,19 +38,19 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
   private Boolean willRunAnotherTime = false;
   @TestVisible
   private List<String> sobjectNames = new List<String>{
-    'MetadataPackage',
-    'MetadataPackageVersion',
-    'PackageSubscriber'
+    METADATA_PACKAGE_NAME,
+    METADATA_PACKAGE_VERSION_NAME,
+    PACKAGE_SUBSCRIBER_NAME
   };
   @TestVisible
   private String currentSObjectName;
 
   public void scheduleHourly() {
-    this.scheduleHourly(true);
+    this.scheduleHourly('Hourly Package Data Extract Job', true);
   }
 
-  public void scheduleHourly(Boolean runImmediately) {
-    System.schedule('Hourly Package Data Extract Job', '0 0 * * * ?', this);
+  public void scheduleHourly(String jobName, Boolean runImmediately) {
+    System.schedule(jobName, '0 0 * * * ?', this);
     if (runImmediately == true) {
       this.executeBatch();
     }
@@ -59,32 +62,29 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
 
   public Database.QueryLocator start(Database.BatchableContext context) {
     this.currentSObjectName = this.sobjectNames.remove(0);
-    return getQueryLocator(currentSObjectName);
+    return getQueryLocator();
   }
 
   public void execute(Database.BatchableContext context, List<Object> scope) {
-    switch on this.currentSObjectName {
-      when 'MetadataPackage' {
-        List<MetadataPackageInfo> packages = (List<MetadataPackageInfo>) JSON.deserialize(
-          JSON.serialize(scope),
-          List<MetadataPackageInfo>.class
-        );
-        this.processPackages(packages);
-      }
-      when 'MetadataPackageVersion' {
-        List<MetadataPackageVersionInfo> packageVersions = (List<MetadataPackageVersionInfo>) JSON.deserialize(
-          JSON.serialize(scope),
-          List<MetadataPackageVersionInfo>.class
-        );
-        this.processPackageVersions(packageVersions);
-      }
-      when 'PackageSubscriber' {
-        List<PackageSubscriberInfo> packageSubscribers = (List<PackageSubscriberInfo>) JSON.deserialize(
-          JSON.serialize(scope),
-          List<PackageSubscriberInfo>.class
-        );
-        this.processPackageSubscribers(packageSubscribers);
-      }
+    // Switch statements are amazing, but in Apex, you would have to use an inline hardcoded string, which is pretty lame
+    if (this.currentSObjectName == METADATA_PACKAGE_NAME) {
+      List<MetadataPackageInfo> packages = (List<MetadataPackageInfo>) JSON.deserialize(
+        JSON.serialize(scope),
+        List<MetadataPackageInfo>.class
+      );
+      this.processPackages(packages);
+    } else if (this.currentSObjectName == METADATA_PACKAGE_VERSION_NAME) {
+      List<MetadataPackageVersionInfo> packageVersions = (List<MetadataPackageVersionInfo>) JSON.deserialize(
+        JSON.serialize(scope),
+        List<MetadataPackageVersionInfo>.class
+      );
+      this.processPackageVersions(packageVersions);
+    } else if (this.currentSObjectName == PACKAGE_SUBSCRIBER_NAME) {
+      List<PackageSubscriberInfo> packageSubscribers = (List<PackageSubscriberInfo>) JSON.deserialize(
+        JSON.serialize(scope),
+        List<PackageSubscriberInfo>.class
+      );
+      this.processPackageSubscribers(packageSubscribers);
     }
   }
 
@@ -101,32 +101,28 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     Database.executeBatch(this, BATCH_SIZE);
   }
 
-  private Database.QueryLocator getQueryLocator(String sobjectName) {
+  private Database.QueryLocator getQueryLocator() {
     String query;
-    switch on sobjectName {
-      when 'MetadataPackage' {
-        query = 'SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage';
-      }
-      when 'MetadataPackageVersion' {
-        query = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion';
-      }
-      when 'PackageSubscriber' {
-        query = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
-      }
-      when else {
-        Exception ex = new IllegalArgumentException();
-        ex.setMessage('Unsupported SObjectType: ' + sobjectName);
-        throw ex;
-      }
+    // Switch statements are amazing, but in Apex, you would have to use an inline hardcoded string, which is pretty lame
+    if (this.currentSObjectName == METADATA_PACKAGE_NAME) {
+      query = METADATA_PACKAGE_QUERY;
+    } else if (this.currentSObjectName == METADATA_PACKAGE_VERSION_NAME) {
+      query = METADATA_PACKAGE_VERSION_QUERY;
+    } else if (this.currentSObjectName == PACKAGE_SUBSCRIBER_NAME) {
+      query = PACKAGE_SUBSCRIBER_QUERY;
+    } else {
+      Exception ex = new IllegalArgumentException();
+      ex.setMessage('Unsupported SObjectType: ' + this.currentSObjectName);
+      throw ex;
     }
 
     if (this.queryLimit != null) {
       query += ' LIMIT ' + this.queryLimit;
     }
 
-    // A horrible hack - when the 3 SObjects (above) don't exist in the org, the start() method fails,
-    // and scratch orgs (used to create the 2GP) will never have the 3 SObjects. Overriding the query string
-    // lets the platform "work", and unit tests check the value of this.query as a workaround
+    // A horrible hack - when the 3 SObjects (above) don't exist in the org, the start() method fails because
+    // the QueryLocator can't find the objects, and scratch orgs (used to create the 2GP) & sandboxes will never have the 3 SObjects.
+    // Overriding the query string keeps the platform happy, and unit tests check the value of this.query as a workaround
     this.currentQuery = query;
     if (Test.isRunningTest() == true && IS_PACKAGING_ORG == false) {
       query = 'SELECT Id FROM User';
@@ -208,8 +204,8 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     upsert childSubscriberOrgsByOrgId.values() OrgId__c;
   }
 
-  // Inner classes used to substitue the SObjects `MetadataPackage`, `MetadataPackageVersion`, and `PackageSubscriber`
-  // that don't/won't/can't exist in scratch orgs (used for creating package versions)
+  // Inner classes used to substitute the SObjects `MetadataPackage`, `MetadataPackageVersion`, and `PackageSubscriber`
+  // that don't/won't/can't exist in scratch orgs (used for creating package versions) or sandboxes
   public class MetadataPackageInfo {
     public Id Id;
     public String Name;

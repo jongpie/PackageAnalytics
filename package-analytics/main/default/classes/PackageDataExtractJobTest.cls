@@ -31,13 +31,13 @@ private class PackageDataExtractJobTest {
   static void returnsPackageQueryLocatorOnStart() {
     // Arrange
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.sobjectNames = new List<String>{ 'MetadataPackage' };
+    job.sobjectNames = new List<String>{ PackageDataExtractJob.METADATA_PACKAGE_NAME };
 
     // Act
     job.start(null);
 
     // Assert
-    String expectedQuery = 'SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage';
+    String expectedQuery = 'SELECT Id, Name, NamespacePrefix, PackageCategory, SystemModStamp FROM MetadataPackage ORDER BY SystemModStamp DESC';
     System.assertEquals(expectedQuery, job.currentQuery);
   }
 
@@ -45,13 +45,13 @@ private class PackageDataExtractJobTest {
   static void returnsPackageVersionQueryLocatorOnStart() {
     // Arrange
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.sobjectNames = new List<String>{ 'MetadataPackageVersion' };
+    job.sobjectNames = new List<String>{ PackageDataExtractJob.METADATA_PACKAGE_VERSION_NAME };
 
     // Act
     job.start(null);
 
     // Assert
-    String expectedQuery = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion';
+    String expectedQuery = 'SELECT BuildNumber, Id, IsDeprecated, MajorVersion, MetadataPackageid, MinorVersion, Name, PatchVersion, ReleaseState, SystemModStamp FROM MetadataPackageVersion ORDER BY SystemModStamp DESC';
     System.assertEquals(expectedQuery, job.currentQuery);
   }
 
@@ -59,13 +59,13 @@ private class PackageDataExtractJobTest {
   static void returnsPackageSubscriberQueryLocatorOnStart() {
     // Arrange
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.sobjectNames = new List<String>{ 'PackageSubscriber' };
+    job.sobjectNames = new List<String>{ PackageDataExtractJob.PACKAGE_SUBSCRIBER_NAME };
 
     // Act
     job.start(null);
 
     // Assert
-    String expectedQuery = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber';
+    String expectedQuery = 'SELECT Id, InstanceName, MetadataPackageId, MetadataPackageVersionId, OrgKey, OrgName, OrgStatus, OrgType, ParentOrg, SystemModStamp FROM PackageSubscriber ORDER BY SystemModStamp DESC';
     System.assertEquals(expectedQuery, job.currentQuery);
   }
 
@@ -78,7 +78,7 @@ private class PackageDataExtractJobTest {
 
     // Act
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.currentSObjectName = 'MetadataPackage';
+    job.currentSObjectName = PackageDataExtractJob.METADATA_PACKAGE_NAME;
     job.execute(null, new List<Object>{ metadataPackage });
 
     // Assert
@@ -106,7 +106,7 @@ private class PackageDataExtractJobTest {
 
     // Act
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.currentSObjectName = 'MetadataPackageVersion';
+    job.currentSObjectName = PackageDataExtractJob.METADATA_PACKAGE_VERSION_NAME;
     job.execute(null, new List<Object>{ metadataPackageVersion });
 
     // Assert
@@ -150,7 +150,7 @@ private class PackageDataExtractJobTest {
 
     // Act
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.currentSObjectName = 'MetadataPackageVersion';
+    job.currentSObjectName = PackageDataExtractJob.METADATA_PACKAGE_VERSION_NAME;
     job.execute(null, new List<Object>{ metadataPackageVersion });
 
     // Assert
@@ -175,7 +175,7 @@ private class PackageDataExtractJobTest {
 
     // Act
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.currentSObjectName = 'PackageSubscriber';
+    job.currentSObjectName = PackageDataExtractJob.PACKAGE_SUBSCRIBER_NAME;
     job.execute(null, new List<Object>{ packageSubscriber });
 
     // Assert
@@ -205,7 +205,10 @@ private class PackageDataExtractJobTest {
   static void startsAnotherRunOnFinishWhenThereAreAdditionalSObjects() {
     // Arrange
     PackageDataExtractJob job = new PackageDataExtractJob();
-    job.sobjectNames = new List<String>{ 'MetadataPackageVersion', 'PackageSubscriber' };
+    job.sobjectNames = new List<String>{
+      PackageDataExtractJob.METADATA_PACKAGE_NAME,
+      PackageDataExtractJob.PACKAGE_SUBSCRIBER_NAME
+    };
     System.assertEquals(false, job.willRunAnotherTime);
 
     // Act
@@ -232,7 +235,7 @@ private class PackageDataExtractJobTest {
   }
 
   @IsTest
-  static void runsBatchJobForMetadataPackageWhenOrgIsDevHub() {
+  static void runsBatchJobForMetadataPackageWhenOrgIsPackagingOrg() {
     // Integration test - this can only run in dev hubs that have 1+ packages, so use a few guard clauses to see if this test can run
     // Global describe - yuck!
     if (PackageDataExtractJob.IS_PACKAGING_ORG == false) {
@@ -261,7 +264,7 @@ private class PackageDataExtractJobTest {
 
     // Assert
     SObject metadataPackage = Database.query(
-      'SELECT PackageCategory, Id, Name, NamespacePrefix, SystemModStamp FROM MetadataPackage LIMIT 1'
+      'SELECT PackageCategory, Id, Name, NamespacePrefix, SystemModStamp FROM MetadataPackage ORDER BY SystemModStamp DESC LIMIT 1'
     );
     Package__c storedPackage = [
       SELECT LastUpdated__c, PackageCategory__c, PackageId__c, Name, NamespacePrefix__c
@@ -279,7 +282,7 @@ private class PackageDataExtractJobTest {
   // Helper methods
   private static PackageDataExtractJob.MetadataPackageInfo generateMetadataPackageInfo() {
     PackageDataExtractJob.MetadataPackageInfo metadataPackage = new PackageDataExtractJob.MetadataPackageInfo();
-    // The actual ID doesn't matter - it just needs to be a real ID
+    // The actual ID doesn't matter since it's only used as an external ID for upserting - it just needs to be a real ID
     metadataPackage.Id = UserInfo.getUserId();
     metadataPackage.Name = 'My Amazing 2GP';
     metadataPackage.NamespacePrefix = 'some_namespace';
@@ -294,7 +297,7 @@ private class PackageDataExtractJobTest {
   ) {
     PackageDataExtractJob.MetadataPackageVersionInfo metadataPackageVersion = new PackageDataExtractJob.MetadataPackageVersionInfo();
     metadataPackageVersion.BuildNumber = 99;
-    // The actual ID doesn't matter - it just needs to be a real ID
+    // The actual ID doesn't matter since it's only used as an external ID for upserting - it just needs to be a real ID
     metadataPackageVersion.Id = UserInfo.getUserId();
     metadataPackageVersion.IsDeprecated = false;
     metadataPackageVersion.MajorVersion = 1;
@@ -312,7 +315,7 @@ private class PackageDataExtractJobTest {
     Id metadataPackageVersionId
   ) {
     PackageDataExtractJob.PackageSubscriberInfo packageSubscriber = new PackageDataExtractJob.PackageSubscriberInfo();
-    // The actual ID doesn't matter - it just needs to be a real ID
+    // The actual ID doesn't matter since it's only used as an external ID for upserting - it just needs to be a real ID
     packageSubscriber.Id = UserInfo.getUserId();
     packageSubscriber.InstanceName = 'ABC123';
     packageSubscriber.MetadataPackageVersionId = metadataPackageVersionId;
