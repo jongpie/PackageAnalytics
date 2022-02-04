@@ -2,11 +2,12 @@
   "packageDirectories": [
     {
       "path": "package-analytics",
-      "default": true,
       "package": "Package Analytics",
-      "versionName": "Initial beta",
+      "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
+      "versionName": "Initial Release",
       "versionNumber": "1.0.0.NEXT",
-      "versionDescription": "Initial release of new Package Analytics app"
+      "versionDescription": "Initial release of new Package Analytics app",
+      "default": true
     }
   ],
   "name": "package-analytics",
@@ -25,6 +26,7 @@
     "Package Analytics@1.0.0-2": "04t4x000000FEilAAG",
     "Package Analytics@1.0.0-3": "04t4x000000FEiqAAG",
     "Package Analytics@1.0.0-4": "04t4x000000FEirAAG",
-    "Package Analytics@1.0.0-5": "04t4x000000FEivAAG"
+    "Package Analytics@1.0.0-5": "04t4x000000FEivAAG",
+    "Package Analytics@1.0.0-6": "04t4x000000FEjFAAW"
   }
 }

@@ -5,6 +5,8 @@
 
 public without sharing class PackageDataExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
   private static final Integer BATCH_SIZE = 2000;
+  @TestVisible
+  private static final String DEFAULT_HOURLY_JOB_NAME = 'Hourly Package Data Extract Job';
   private static final Database.DmlOptions DML_OPTIONS {
     get {
       if (DML_OPTIONS == null) {
@@ -15,6 +17,8 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     }
     set;
   }
+  @TestVisible
+  private static final String HOURLY_CRON_SCHEDULE = '0 0 * * * ?';
   @TestVisible
   private static final Boolean IS_PACKAGING_ORG = Type.forName('MetadataPackage') != null;
   @TestVisible
@@ -33,9 +37,9 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
   @TestVisible
   private String currentQuery;
   @TestVisible
-  private Integer queryLimit;
+  private String currentSObjectName;
   @TestVisible
-  private Boolean willRunAnotherTime = false;
+  private Integer queryLimit;
   @TestVisible
   private List<String> sobjectNames = new List<String>{
     METADATA_PACKAGE_NAME,
@@ -43,17 +47,17 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     PACKAGE_SUBSCRIBER_NAME
   };
   @TestVisible
-  private String currentSObjectName;
+  private Boolean willRunAnotherTime = false;
 
-  public void scheduleHourly() {
-    this.scheduleHourly('Hourly Package Data Extract Job', true);
+  public Id scheduleHourly() {
+    return this.scheduleHourly(DEFAULT_HOURLY_JOB_NAME, true);
   }
 
-  public void scheduleHourly(String jobName, Boolean runImmediately) {
-    System.schedule(jobName, '0 0 * * * ?', this);
+  public Id scheduleHourly(String jobName, Boolean runImmediately) {
     if (runImmediately == true) {
       this.executeBatch();
     }
+    return System.schedule(jobName, HOURLY_CRON_SCHEDULE, this);
   }
 
   public void execute(System.SchedulableContext context) {

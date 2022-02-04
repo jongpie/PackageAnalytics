@@ -11,6 +11,21 @@
 @IsTest
 private class PackageDataExtractJobTest {
   @IsTest
+  static void schedulesJobHourlyWithDefaultJobName() {
+    Test.startTest();
+    Id jobId = new PackageDataExtractJob().scheduleHourly();
+    Test.stopTest();
+
+    CronTrigger cronTrigger = [
+      SELECT Id, CronExpression, TimesTriggered, NextFireTime
+      FROM CronTrigger
+      WHERE Id = :jobId
+    ];
+    System.assertEquals(PackageDataExtractJob.HOURLY_CRON_SCHEDULE, cronTrigger.CronExpression);
+    System.assertEquals(0, cronTrigger.TimesTriggered);
+  }
+
+  @IsTest
   static void throwsExceptionForUnsupportedSObjectTypeOnStart() {
     // Arrange
     String unsupportedSObjectName = Schema.Account.SObjectType.getDescribe().getName();
