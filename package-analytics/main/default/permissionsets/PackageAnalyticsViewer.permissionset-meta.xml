@@ -4,7 +4,11 @@
         <application>PackageAnalyticsConsole</application>
         <visible>true</visible>
     </applicationVisibilities>
-    <description>Provides full admin access for the Package Analytics app</description>
+    <classAccesses>
+        <apexClass>PackageDataExtractJob</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Provides read-only access for the Package Analytics app</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>PackageSubscriberOrg__c.InstanceNameFormula__c</field>
@@ -151,31 +155,31 @@
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Package Analytics Admin</label>
+    <label>Package Analytics Viewer</label>
     <objectPermissions>
         <allowCreate>false</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>PackageSubscriberOrg__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>PackageVersion__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>Package__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>

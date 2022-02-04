@@ -1,8 +1,3 @@
-//-------------------------------------------------------------------------------------------------//
-// This file is part of the Package Analytics project, released under the MIT License.             //
-// See LICENSE file or go to https://github.com/jongpie/PackageAnalytics for full license details. //
-//-------------------------------------------------------------------------------------------------//
-
 /*
   The SObjects `MetadataPackage`, `MetadataPackageVersion`, and `PackageSubscriber` cannot be created or modified in Apex,
   so this test class uses instances of inner classes in `PackageDataExtractJob` to create mock records.
