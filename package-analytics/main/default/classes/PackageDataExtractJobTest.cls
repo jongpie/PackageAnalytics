@@ -1,15 +1,15 @@
 /*
   The SObjects `MetadataPackage`, `MetadataPackageVersion`, and `PackageSubscriber` cannot be created or modified in Apex,
-  so this test class uses instances of inner classes in `PackageExtractJob` to create mock records.
+  so this test class uses instances of inner classes in `PackageDataExtractJob` to create mock records.
   When these SObjects *are* present, the data is visible to tests (even without @SeeAllData), so integration tests are also included below.
 */
 @IsTest
-private class PackageExtractJobTest {
+private class PackageDataExtractJobTest {
   @IsTest
   static void throwsExceptionForUnsupportedSObjectTypeOnStart() {
     // Arrange
     String unsupportedSObjectName = Schema.Account.SObjectType.getDescribe().getName();
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{ unsupportedSObjectName };
 
     try {
@@ -25,7 +25,7 @@ private class PackageExtractJobTest {
   @IsTest
   static void returnsPackageQueryLocatorOnStart() {
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{ 'MetadataPackage' };
 
     // Act
@@ -39,7 +39,7 @@ private class PackageExtractJobTest {
   @IsTest
   static void returnsPackageVersionQueryLocatorOnStart() {
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{ 'MetadataPackageVersion' };
 
     // Act
@@ -53,7 +53,7 @@ private class PackageExtractJobTest {
   @IsTest
   static void returnsPackageSubscriberQueryLocatorOnStart() {
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{ 'PackageSubscriber' };
 
     // Act
@@ -67,12 +67,12 @@ private class PackageExtractJobTest {
   @IsTest
   static void storesPackageDataOnExecute() {
     // Arrange
-    PackageExtractJob.MetadataPackageInfo metadataPackage = generateMetadataPackageInfo();
+    PackageDataExtractJob.MetadataPackageInfo metadataPackage = generateMetadataPackageInfo();
     Integer countOfPackageRecords = [SELECT COUNT() FROM Package__c];
     System.assertEquals(0, countOfPackageRecords);
 
     // Act
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.currentSObjectName = 'MetadataPackage';
     job.execute(null, new List<Object>{ metadataPackage });
 
@@ -93,14 +93,14 @@ private class PackageExtractJobTest {
     // Arrange
     Package__c storedPackage = generateStoredPackage();
     insert storedPackage;
-    PackageExtractJob.MetadataPackageVersionInfo metadataPackageVersion = generateMetadataPackageVersionInfo(
+    PackageDataExtractJob.MetadataPackageVersionInfo metadataPackageVersion = generateMetadataPackageVersionInfo(
       storedPackage.PackageId__c
     );
     Integer countOfPackageVersionRecords = [SELECT COUNT() FROM PackageVersion__c];
     System.assertEquals(0, countOfPackageVersionRecords);
 
     // Act
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.currentSObjectName = 'MetadataPackageVersion';
     job.execute(null, new List<Object>{ metadataPackageVersion });
 
@@ -136,7 +136,7 @@ private class PackageExtractJobTest {
     // Arrange
     Package__c storedPackage = generateStoredPackage();
     insert storedPackage;
-    PackageExtractJob.MetadataPackageVersionInfo metadataPackageVersion = generateMetadataPackageVersionInfo(
+    PackageDataExtractJob.MetadataPackageVersionInfo metadataPackageVersion = generateMetadataPackageVersionInfo(
       storedPackage.PackageId__c
     );
     metadataPackageVersion.Name = 'Z'.repeat(10000);
@@ -144,7 +144,7 @@ private class PackageExtractJobTest {
     System.assertEquals(0, countOfPackageVersionRecords);
 
     // Act
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.currentSObjectName = 'MetadataPackageVersion';
     job.execute(null, new List<Object>{ metadataPackageVersion });
 
@@ -162,14 +162,14 @@ private class PackageExtractJobTest {
     insert storedPackage;
     PackageVersion__c storedPackageVersion = generateStoredPackageVersion(storedPackage.Id);
     insert storedPackageVersion;
-    PackageExtractJob.PackageSubscriberInfo packageSubscriber = generatePackageSubscriberInfo(
+    PackageDataExtractJob.PackageSubscriberInfo packageSubscriber = generatePackageSubscriberInfo(
       storedPackageVersion.SubscriberPackageVersionId__c
     );
     Integer countOfPackageSubscriberOrgRecords = [SELECT COUNT() FROM PackageSubscriberOrg__c];
     System.assertEquals(0, countOfPackageSubscriberOrgRecords);
 
     // Act
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.currentSObjectName = 'PackageSubscriber';
     job.execute(null, new List<Object>{ packageSubscriber });
 
@@ -201,7 +201,7 @@ private class PackageExtractJobTest {
   @IsTest
   static void startsAnotherRunOnFinishWhenThereAreAdditionalSObjects() {
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{ 'MetadataPackageVersion', 'PackageSubscriber' };
     System.assertEquals(false, job.willRunAnotherTime);
 
@@ -216,7 +216,7 @@ private class PackageExtractJobTest {
   @IsTest
   static void doesNotStartAnotherRunOnFinishWhenThereAreNoMoreSObjects() {
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.sobjectNames = new List<String>{};
     System.assertEquals(false, job.willRunAnotherTime);
 
@@ -232,7 +232,7 @@ private class PackageExtractJobTest {
   static void runsBatchJobForMetadataPackageWhenOrgIsDevHub() {
     // Integration test - this can only run in dev hubs that have 1+ packages, so use a few guard clauses to see if this test can run
     // Global describe - yuck!
-    if (PackageExtractJob.IS_DEV_HUB == false) {
+    if (PackageDataExtractJob.IS_DEV_HUB == false) {
       System.debug(
         LoggingLevel.INFO,
         'Current org does not have the SObject MetadataPackage, skipping integration test'
@@ -248,7 +248,7 @@ private class PackageExtractJobTest {
     }
 
     // Arrange
-    PackageExtractJob job = new PackageExtractJob();
+    PackageDataExtractJob job = new PackageDataExtractJob();
     job.queryLimit = 1;
 
     // Act
@@ -274,8 +274,8 @@ private class PackageExtractJobTest {
   // TODO - add additional integration tests for MetadataPackageVersion & PackageSubscriber
 
   // Helper methods
-  private static PackageExtractJob.MetadataPackageInfo generateMetadataPackageInfo() {
-    PackageExtractJob.MetadataPackageInfo metadataPackage = new PackageExtractJob.MetadataPackageInfo();
+  private static PackageDataExtractJob.MetadataPackageInfo generateMetadataPackageInfo() {
+    PackageDataExtractJob.MetadataPackageInfo metadataPackage = new PackageDataExtractJob.MetadataPackageInfo();
     // The actual ID doesn't matter - it just needs to be a real ID
     metadataPackage.Id = UserInfo.getUserId();
     metadataPackage.Name = 'My Amazing 2GP';
@@ -286,8 +286,10 @@ private class PackageExtractJobTest {
     return metadataPackage;
   }
 
-  private static PackageExtractJob.MetadataPackageVersionInfo generateMetadataPackageVersionInfo(Id metadataPackageId) {
-    PackageExtractJob.MetadataPackageVersionInfo metadataPackageVersion = new PackageExtractJob.MetadataPackageVersionInfo();
+  private static PackageDataExtractJob.MetadataPackageVersionInfo generateMetadataPackageVersionInfo(
+    Id metadataPackageId
+  ) {
+    PackageDataExtractJob.MetadataPackageVersionInfo metadataPackageVersion = new PackageDataExtractJob.MetadataPackageVersionInfo();
     metadataPackageVersion.BuildNumber = 99;
     // The actual ID doesn't matter - it just needs to be a real ID
     metadataPackageVersion.Id = UserInfo.getUserId();
@@ -303,8 +305,10 @@ private class PackageExtractJobTest {
     return metadataPackageVersion;
   }
 
-  private static PackageExtractJob.PackageSubscriberInfo generatePackageSubscriberInfo(Id metadataPackageVersionId) {
-    PackageExtractJob.PackageSubscriberInfo packageSubscriber = new PackageExtractJob.PackageSubscriberInfo();
+  private static PackageDataExtractJob.PackageSubscriberInfo generatePackageSubscriberInfo(
+    Id metadataPackageVersionId
+  ) {
+    PackageDataExtractJob.PackageSubscriberInfo packageSubscriber = new PackageDataExtractJob.PackageSubscriberInfo();
     // The actual ID doesn't matter - it just needs to be a real ID
     packageSubscriber.Id = UserInfo.getUserId();
     packageSubscriber.InstalledStatus = 'i';

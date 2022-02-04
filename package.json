@@ -8,6 +8,7 @@
   },
   "scripts": {
     "package:version:create": "sfdx force:package:version:create --package \"Package Analytics\" --codecoverage --installationkeybypass --wait 30",
+    "permset:assign:admin": "sfdx force:user:permset:assign --permsetname PackageAnalyticsAdmin",
     "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "source:retrieve": "sfdx force:source:retrieve --sourcepath ./package-analytics && npm run prettier:fix"
   },

@@ -1,10 +1,10 @@
-public without sharing class PackageExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
+public without sharing class PackageDataExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
   private static final Integer BATCH_SIZE = 2000;
   @TestVisible
   private static final Boolean IS_DEV_HUB {
     get {
       if (IS_DEV_HUB == null) {
-        IS_DEV_HUB = Schema.getGlobalDescribe().containsKey('MetadataPackage');
+        IS_DEV_HUB = Type.forName('MetadataPackage') != null;
       }
       return IS_DEV_HUB;
     }
