@@ -12,10 +12,15 @@
 private class PackageDataExtractJobTest {
   @IsTest
   static void schedulesJobHourlyWithDefaultJobName() {
+    // Arrange
+    PackageDataExtractJob job = new PackageDataExtractJob();
+
+    // Act
     Test.startTest();
-    Id jobId = new PackageDataExtractJob().scheduleHourly();
+    Id jobId = job.scheduleHourly();
     Test.stopTest();
 
+    // Assert
     CronTrigger cronTrigger = [
       SELECT Id, CronExpression, TimesTriggered, NextFireTime
       FROM CronTrigger

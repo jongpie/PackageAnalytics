@@ -1,6 +1,6 @@
 # Package Analytics
 
-Provides reportable data for your Salesforce packages in your dev hub.
+Provides reportable data about your Salesforce packages in your dev hub.
 
 [![Install Unlocked Package in a Dev Hub](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000FEjFAAW)
 

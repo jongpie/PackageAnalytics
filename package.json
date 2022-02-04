@@ -7,6 +7,7 @@
     "@prettier/plugin-xml": "latest"
   },
   "scripts": {
+    "org:limits": "sfdx force:limits:api:display --json",
     "package:version:create": "sfdx force:package:version:create --package \"Package Analytics\" --codecoverage --installationkeybypass --wait 30 && npm run prettier:fix",
     "package:version:create:skipvalidation": "sfdx force:package:version:create --package \"Package Analytics\" --skipvalidation --installationkeybypass --wait 30 && npm run prettier:fix",
     "permset:assign:admin": "sfdx force:user:permset:assign --permsetname PackageAnalyticsAdmin",
