@@ -5,6 +5,17 @@
 
 public without sharing class PackageDataExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
   private static final Integer BATCH_SIZE = 2000;
+  private static final Database.DmlOptions DML_OPTIONS {
+    get {
+      if (DML_OPTIONS == null) {
+        DML_OPTIONS = new Database.dmlOptions();
+        DML_OPTIONS.AllowFieldTruncation = true;
+      }
+      return DML_OPTIONS;
+    }
+    set;
+  }
+
   @TestVisible
   private static final Boolean IS_PACKAGING_ORG {
     get {
@@ -32,11 +43,18 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
   private String currentSObjectName;
 
   public void scheduleHourly() {
+    this.scheduleHourly(true);
+  }
+
+  public void scheduleHourly(Boolean runImmediately) {
     System.schedule('Hourly Package Data Extract Job', '0 0 * * * ?', this);
+    if (runImmediately == true) {
+      this.executeBatch();
+    }
   }
 
   public void execute(System.SchedulableContext context) {
-    Database.executeBatch(this, BATCH_SIZE);
+    this.executeBatch();
   }
 
   public Database.QueryLocator start(Database.BatchableContext context) {
@@ -74,9 +92,13 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     if (this.sobjectNames.isEmpty() == false) {
       this.willRunAnotherTime = true;
       if (Test.isRunningTest() == false) {
-        Database.executeBatch(this, BATCH_SIZE);
+        this.executeBatch();
       }
     }
+  }
+
+  private void executeBatch() {
+    Database.executeBatch(this, BATCH_SIZE);
   }
 
   private Database.QueryLocator getQueryLocator(String sobjectName) {
@@ -112,12 +134,6 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     return Database.getQueryLocator(query);
   }
 
-  private Database.DmlOptions getDmlOptions() {
-    Database.DMLOptions dmo = new Database.dmlOptions();
-    dmo.AllowFieldTruncation = true;
-    return dmo;
-  }
-
   private void processPackages(List<MetadataPackageInfo> metadataPackages) {
     List<Package__c> storedPackages = new List<Package__c>();
     for (MetadataPackageInfo metadataPackage : metadataPackages) {
@@ -128,7 +144,7 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
         Name = metadataPackage.Name,
         NamespacePrefix__c = metadataPackage.NamespacePrefix
       );
-      storedPackage.setOptions(getDmlOptions());
+      storedPackage.setOptions(DML_OPTIONS);
       storedPackages.add(storedPackage);
     }
     upsert storedPackages PackageId__c;
@@ -149,7 +165,7 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
         ReleaseState__c = metadataPackageVersion.ReleaseState,
         SubscriberPackageVersionId__c = metadataPackageVersion.Id
       );
-      storedPackageVersion.setOptions(getDmlOptions());
+      storedPackageVersion.setOptions(DML_OPTIONS);
       storedPackageVersions.add(storedPackageVersion);
     }
     upsert storedPackageVersions SubscriberPackageVersionId__c;
