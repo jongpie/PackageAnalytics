@@ -72,20 +72,20 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
   public void execute(Database.BatchableContext context, List<Object> scope) {
     // Switch statements are amazing, but in Apex, you would have to use an inline hardcoded string, which is pretty lame
     if (this.currentSObjectName == METADATA_PACKAGE_NAME) {
-      List<MetadataPackageInfo> packages = (List<MetadataPackageInfo>) JSON.deserialize(
-        JSON.serialize(scope),
+      List<MetadataPackageInfo> packages = (List<MetadataPackageInfo>) this.deserializeTo(
+        scope,
         List<MetadataPackageInfo>.class
       );
       this.processPackages(packages);
     } else if (this.currentSObjectName == METADATA_PACKAGE_VERSION_NAME) {
-      List<MetadataPackageVersionInfo> packageVersions = (List<MetadataPackageVersionInfo>) JSON.deserialize(
-        JSON.serialize(scope),
+      List<MetadataPackageVersionInfo> packageVersions = (List<MetadataPackageVersionInfo>) this.deserializeTo(
+        scope,
         List<MetadataPackageVersionInfo>.class
       );
       this.processPackageVersions(packageVersions);
     } else if (this.currentSObjectName == PACKAGE_SUBSCRIBER_NAME) {
-      List<PackageSubscriberInfo> packageSubscribers = (List<PackageSubscriberInfo>) JSON.deserialize(
-        JSON.serialize(scope),
+      List<PackageSubscriberInfo> packageSubscribers = (List<PackageSubscriberInfo>) this.deserializeTo(
+        scope,
         List<PackageSubscriberInfo>.class
       );
       this.processPackageSubscribers(packageSubscribers);
@@ -132,6 +132,10 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
       query = 'SELECT Id FROM User';
     }
     return Database.getQueryLocator(query);
+  }
+
+  private List<Object> deserializeTo(List<Object> scope, Type type) {
+    return (List<Object>) JSON.deserialize(JSON.serialize(scope), type);
   }
 
   private void processPackages(List<MetadataPackageInfo> metadataPackages) {
