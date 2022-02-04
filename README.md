@@ -15,3 +15,17 @@ Provides reportable data for your Salesforce packages in your dev hub.
    - `Package__c`
    - `PackageVersion__c`
    - `PackageSubscriberOrg__c`
+
+## Screenshots
+
+View your list of 1GP and 2GP packages
+
+![Packages list view](/images/packages-tab.png)
+
+For each package, you can see the list of package versions & additional details about the package
+
+![Package detail page](/images/package-detail-page.png)
+
+Similarly, for each package version, you can see the list of orgs that have installed the package version, as well as additional details about the package version.
+
+![Package Version detail page](/images/package-version-detail-page.png)
