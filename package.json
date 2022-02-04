@@ -15,5 +15,6 @@
     "type": "git",
     "url": "https://github.com/jongpie/PackageAnalytics.git"
   },
-  "author": "Jonathan Gillespie"
+  "author": "Jonathan Gillespie",
+  "license": "MIT"
 }
