@@ -1,12 +1,17 @@
+//-------------------------------------------------------------------------------------------------//
+// This file is part of the Package Analytics project, released under the MIT License.             //
+// See LICENSE file or go to https://github.com/jongpie/PackageAnalytics for full license details. //
+//-------------------------------------------------------------------------------------------------//
+
 public without sharing class PackageDataExtractJob implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
   private static final Integer BATCH_SIZE = 2000;
   @TestVisible
-  private static final Boolean IS_DEV_HUB {
+  private static final Boolean IS_PACKAGING_ORG {
     get {
-      if (IS_DEV_HUB == null) {
-        IS_DEV_HUB = Type.forName('MetadataPackage') != null;
+      if (IS_PACKAGING_ORG == null) {
+        IS_PACKAGING_ORG = Type.forName('MetadataPackage') != null;
       }
-      return IS_DEV_HUB;
+      return IS_PACKAGING_ORG;
     }
     set;
   }
@@ -101,7 +106,7 @@ public without sharing class PackageDataExtractJob implements Database.Batchable
     // and scratch orgs (used to create the 2GP) will never have the 3 SObjects. Overriding the query string
     // lets the platform "work", and unit tests check the value of this.query as a workaround
     this.currentQuery = query;
-    if (Test.isRunningTest() == true && IS_DEV_HUB == false) {
+    if (Test.isRunningTest() == true && IS_PACKAGING_ORG == false) {
       query = 'SELECT Id FROM User';
     }
     return Database.getQueryLocator(query);

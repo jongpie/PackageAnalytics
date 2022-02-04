@@ -5,7 +5,7 @@
       "default": true,
       "package": "Package Analytics",
       "versionName": "Initial beta",
-      "versionNumber": "0.9.0.NEXT",
+      "versionNumber": "1.0.0.NEXT",
       "versionDescription": "Initial release of new Package Analytics app"
     }
   ],
@@ -18,6 +18,9 @@
     "Package Analytics@0.9.0-1": "04t4x000000FEhiAAG",
     "Package Analytics@0.9.0-2": "04t4x000000FEhnAAG",
     "Package Analytics@0.9.0-3": "04t4x000000FEiMAAW",
-    "Package Analytics@0.9.0-4": "04t4x000000FEiRAAW"
+    "Package Analytics@0.9.0-4": "04t4x000000FEiRAAW",
+    "Package Analytics@0.9.0-5": "04t4x000000FEiWAAW",
+    "Package Analytics@0.9.0-6": "04t4x000000FEibAAG",
+    "Package Analytics@1.0.0-1": "04t4x000000FEigAAG"
   }
 }
