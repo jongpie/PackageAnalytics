@@ -3,6 +3,7 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>PackageId__c</columns>
+    <columns>PackageCategory__c</columns>
     <columns>NamespacePrefix__c</columns>
     <columns>TotalReleasedPackageVersions__c</columns>
     <columns>TotalPackageVersions__c</columns>

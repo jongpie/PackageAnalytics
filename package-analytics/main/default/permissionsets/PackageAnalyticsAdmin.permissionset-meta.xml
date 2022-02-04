@@ -16,7 +16,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PackageSubscriberOrg__c.InstanceNameFormula__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -51,12 +51,12 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PackageSubscriberOrg__c.PackageVersionNumberFormula__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>PackageSubscriberOrg__c.ParentOrgFormula__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -116,7 +116,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PackageVersion__c.TotalProductionPackageSubscriberOrgs__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -141,17 +141,17 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Package__c.TotalPackageSubscriberOrgs__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Package__c.TotalPackageVersions__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Package__c.TotalProductionPackageSubscriberOrgs__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>

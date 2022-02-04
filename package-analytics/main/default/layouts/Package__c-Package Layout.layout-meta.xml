@@ -84,6 +84,7 @@
         <fields>ReleaseState__c</fields>
         <fields>IsDeprecated__c</fields>
         <fields>VersionNumber__c</fields>
+        <fields>TotalPackageSubscriberOrgs__c</fields>
         <fields>LastUpdated__c</fields>
         <relatedList>PackageVersion__c.Package__c</relatedList>
         <sortField>LastUpdated__c</sortField>
@@ -98,7 +99,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h5Y00000K6toi</masterLabel>
+        <masterLabel>00h4x000007JSTp</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
