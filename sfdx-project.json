@@ -16,18 +16,6 @@
   "sourceApiVersion": "53.0",
   "packageAliases": {
     "Package Analytics": "0Ho4x00000000XICAY",
-    "Package Analytics@0.9.0-1": "04t4x000000FEhiAAG",
-    "Package Analytics@0.9.0-2": "04t4x000000FEhnAAG",
-    "Package Analytics@0.9.0-3": "04t4x000000FEiMAAW",
-    "Package Analytics@0.9.0-4": "04t4x000000FEiRAAW",
-    "Package Analytics@0.9.0-5": "04t4x000000FEiWAAW",
-    "Package Analytics@0.9.0-6": "04t4x000000FEibAAG",
-    "Package Analytics@1.0.0-1": "04t4x000000FEigAAG",
-    "Package Analytics@1.0.0-2": "04t4x000000FEilAAG",
-    "Package Analytics@1.0.0-3": "04t4x000000FEiqAAG",
-    "Package Analytics@1.0.0-4": "04t4x000000FEirAAG",
-    "Package Analytics@1.0.0-5": "04t4x000000FEivAAG",
-    "Package Analytics@1.0.0-6": "04t4x000000FEjFAAW",
     "Package Analytics@1.0.0-7": "04t4x000000FEjUAAW"
   }
 }
