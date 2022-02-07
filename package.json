@@ -1,0 +1,24 @@
+{
+  "name": "package-analytics",
+  "version": "1.0.0",
+  "devDependencies": {
+    "prettier": "latest",
+    "prettier-plugin-apex": "latest",
+    "@prettier/plugin-xml": "latest"
+  },
+  "scripts": {
+    "org:limits": "sfdx force:limits:api:display --json",
+    "package:version:create": "sfdx force:package:version:create --package \"Package Analytics\" --codecoverage --installationkeybypass --wait 30 && npm run prettier:fix",
+    "package:version:create:skipvalidation": "sfdx force:package:version:create --package \"Package Analytics\" --skipvalidation --installationkeybypass --wait 30 && npm run prettier:fix",
+    "permset:assign:admin": "sfdx force:user:permset:assign --permsetname PackageAnalyticsAdmin",
+    "permset:assign:viewer": "sfdx force:user:permset:assign --permsetname PackageAnalyticsViewer",
+    "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "source:retrieve": "sfdx force:source:retrieve --sourcepath ./package-analytics && npm run prettier:fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jongpie/PackageAnalytics.git"
+  },
+  "author": "Jonathan Gillespie",
+  "license": "MIT"
+}

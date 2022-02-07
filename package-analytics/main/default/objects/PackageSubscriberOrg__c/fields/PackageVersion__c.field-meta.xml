@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PackageVersion__c</fullName>
+    <externalId>false</externalId>
+    <label>Package Version</label>
+    <referenceTo>PackageVersion__c</referenceTo>
+    <relationshipLabel>Package Installs</relationshipLabel>
+    <relationshipName>PackageSubscriberOrgs</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>true</reparentableMasterDetail>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

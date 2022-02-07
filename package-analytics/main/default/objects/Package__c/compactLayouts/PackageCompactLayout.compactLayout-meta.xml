@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PackageCompactLayout</fullName>
+    <fields>Name</fields>
+    <fields>PackageCategory__c</fields>
+    <fields>PackageId__c</fields>
+    <fields>NamespacePrefix__c</fields>
+    <fields>TotalReleasedPackageVersions__c</fields>
+    <fields>TotalPackageSubscriberOrgs__c</fields>
+    <fields>LastUpdated__c</fields>
+    <label>Package Compact Layout</label>
+</CompactLayout>

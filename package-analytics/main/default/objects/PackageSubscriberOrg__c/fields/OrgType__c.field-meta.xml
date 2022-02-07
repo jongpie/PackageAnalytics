@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OrgType__c</fullName>
+    <externalId>false</externalId>
+    <label>Org Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Production</fullName>
+                <color>#009900</color>
+                <default>false</default>
+                <label>Production</label>
+            </value>
+            <value>
+                <fullName>Sandbox</fullName>
+                <color>#3366FF</color>
+                <default>false</default>
+                <label>Sandbox</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
